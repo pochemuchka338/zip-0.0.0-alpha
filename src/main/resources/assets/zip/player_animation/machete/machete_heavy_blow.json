@@ -1,0 +1,70 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "machete_heavy_blow": {
+      "animation_length": 0.375,
+      "bones": {
+        "rightArm": {
+          "rotation": {
+            "0.1667": {
+              "pre": {
+                "vector": [
+                  -177.5,
+                  0,
+                  0
+                ]
+              },
+              "post": {
+                "vector": [
+                  -177.5,
+                  0,
+                  0
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            },
+            "0.2917": {
+              "post": {
+                "vector": [
+                  -10,
+                  0,
+                  0
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            }
+          },
+          "position": {
+            "0.1667": {
+              "pre": {
+                "vector": [
+                  0,
+                  1.2,
+                  -0.7
+                ]
+              },
+              "post": {
+                "vector": [
+                  0,
+                  1.2,
+                  -0.7
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            },
+            "0.2917": {
+              "post": {
+                "vector": [
+                  0,
+                  -1,
+                  -1
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            }
+          }
+        }
+      }
+    }
+  }
+}

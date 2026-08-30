@@ -1,0 +1,13 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"bat_block": {
+			"loop": true,
+			"bones": {
+				"leftArm": {"rotation": [-72.5, 0, -90], "position": [2, -2.4, -1]},
+				"rightArm": {"rotation": [-77.5, 0, 90], "position": [-2, -2.4, -1]},
+				"baseball_bat": {"rotation": [-10, 0, 0], "position": [0, 0, -1]}
+			}
+		}
+	}
+}

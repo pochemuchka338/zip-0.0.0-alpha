@@ -1,0 +1,9 @@
+{
+  "order": 1000,
+  "size": 1,
+  "icon": "curios:slot/head",
+  "add_cosmetic": false,
+  "entities": [
+    "minecraft:player"
+  ]
+}

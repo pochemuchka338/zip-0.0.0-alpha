@@ -1,0 +1,14 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"bat_idle": {
+			"loop": true,
+			"animation_length": 1,
+			"bones": {
+				"rightArm": {
+					"position": {"0.0": [0, 0, 0], "0.5": [0, -1, 0], "1.0": [0, 0, 0]}
+				}
+			}
+		}
+	}
+}

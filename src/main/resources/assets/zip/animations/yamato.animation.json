@@ -1,0 +1,68 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.yamato.idle": {
+			"loop": true,
+			"animation_length": 2.0,
+			"bones": {
+				"yamato": {
+					"rotation": {
+						"0.0": [
+							0,
+							0,
+							0
+						],
+						"1.0": [
+							0,
+							0,
+							2
+						],
+						"2.0": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			}
+		},
+		"animation.yamato.unsheath": {
+			"animation_length": 0.5,
+			"bones": {
+				"sheath": {
+					"scale": {
+						"0.0": [
+							1,
+							1,
+							1
+						],
+						"0.5": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			}
+		},
+		"animation.yamato.sheath": {
+			"animation_length": 0.5,
+			"bones": {
+				"sheath": {
+					"scale": {
+						"0.0": [
+							0,
+							0,
+							0
+						],
+						"0.5": [
+							1,
+							1,
+							1
+						]
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,61 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "machete_sprinting": {
+      "loop": true,
+      "animation_length": 2,
+      "bones": {
+        "leftLeg": {
+          "position": {
+            "0.0": {
+              "vector": [
+                3,
+                0,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                1,
+                0,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                4,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "rightLeg": {
+          "position": {
+            "0.0": {
+              "vector": [
+                -3,
+                0,
+                0
+              ]
+            },
+            "1.0": {
+              "vector": [
+                1,
+                0,
+                0
+              ]
+            },
+            "2.0": {
+              "vector": [
+                -1,
+                0,
+                0
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

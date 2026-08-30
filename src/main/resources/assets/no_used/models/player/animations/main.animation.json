@@ -1,0 +1,29 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true
+		},
+		"running": {
+			"loop": true
+		},
+		"sprinting": {
+			"loop": true
+		},
+		"crouching": {
+			"loop": true
+		},
+		"crouching_idle": {
+			"loop": true
+		},
+		"swipe": {
+			"loop": true
+		},
+		"lay_idle": {
+			"loop": true
+		},
+		"lay": {
+			"loop": true
+		}
+	}
+}

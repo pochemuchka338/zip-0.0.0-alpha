@@ -1,0 +1,56 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "kitchen_knife_hit": {
+      "animation_length": 0.1667,
+      "bones": {
+        "rightArm": {
+          "rotation": {
+            "0.0": {
+              "post": {
+                "vector": [
+                  -129.5911,
+                  -13.5351,
+                  56.9719
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            },
+            "0.0833": {
+              "post": {
+                "vector": [
+                  -32.0911,
+                  -13.5351,
+                  56.9719
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            }
+          },
+          "position": {
+            "0.0": {
+              "post": {
+                "vector": [
+                  0,
+                  -3,
+                  -1
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            },
+            "0.0833": {
+              "post": {
+                "vector": [
+                  -1,
+                  -3,
+                  0
+                ]
+              },
+              "lerp_mode": "catmullrom"
+            }
+          }
+        }
+      }
+    }
+  }
+}

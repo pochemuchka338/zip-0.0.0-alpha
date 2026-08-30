@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "A A",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "zip:aluminum_ingot"
+    },
+    "B": {
+      "item": "zip:aluminum_nugget"
+    }
+  },
+  "result": {
+    "item": "zip:canned"
+  }
+}
