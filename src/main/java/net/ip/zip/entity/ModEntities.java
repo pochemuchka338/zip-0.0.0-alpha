@@ -19,6 +19,20 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("meteor"));
 
+    public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = ENTITIES.register("grenade",
+            () -> EntityType.Builder.<GrenadeEntity>of(GrenadeEntity::new, MobCategory.MISC)
+                    .sized(0.125f, 0.125f)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("grenade"));
+
+    public static final RegistryObject<EntityType<MolotovEntity>> MOLOTOV = ENTITIES.register("molotov",
+            () -> EntityType.Builder.<MolotovEntity>of(MolotovEntity::new, MobCategory.MISC)
+                    .sized(0.2f, 0.2f)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("molotov"));
+
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
     }

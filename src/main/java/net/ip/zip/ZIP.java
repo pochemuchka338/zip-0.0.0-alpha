@@ -62,6 +62,8 @@ public class ZIP {
         @SubscribeEvent
         public static void registerRenderers(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ModEntities.METEOR.get(), net.ip.zip.client.renderer.MeteorRenderer::new);
+            event.registerEntityRenderer(ModEntities.GRENADE.get(), context -> new net.ip.zip.client.renderer.GrenadeRenderer(context));
+            event.registerEntityRenderer(ModEntities.MOLOTOV.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context));
         }
     }
 }

@@ -4,7 +4,6 @@ import net.ip.zip.ZIP;
 import net.ip.zip.block.ModBlocks;
 import net.ip.zip.item.ModItem;
 import net.ip.zip.item.WeaponItem;
-import net.ip.zip.item.grenades.Grenade;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -43,6 +42,7 @@ public class CreativeTabs {
                         pOutput.accept(WeaponItem.IronBat.get());
                         pOutput.accept(WeaponItem.Machete.get());
                         pOutput.accept(WeaponItem.KitchenKnife.get());
+                        pOutput.accept(ModItem.BulletproofVest.get());
                     })
                     .build());
 
