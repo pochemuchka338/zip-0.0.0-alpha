@@ -42,6 +42,7 @@ public class CreativeTabs {
                         pOutput.accept(WeaponItem.IronBat.get());
                         pOutput.accept(WeaponItem.Machete.get());
                         pOutput.accept(WeaponItem.KitchenKnife.get());
+                        pOutput.accept(WeaponItem.StopSign.get());
                         pOutput.accept(ModItem.BulletproofVest.get());
                     })
                     .build());

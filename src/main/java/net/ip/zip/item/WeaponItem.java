@@ -4,6 +4,7 @@ import net.ip.zip.ZIP;
 import net.ip.zip.item.weapons.BaseballBatItem;
 import net.ip.zip.item.weapons.KitchenKnifeItem;
 import net.ip.zip.item.weapons.MacheteItem;
+import net.ip.zip.item.weapons.StopSignItem;
 import net.ip.zip.item.weapons.YamatoItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
@@ -33,6 +34,9 @@ public class WeaponItem {
 
     public static final RegistryObject<Item> KitchenKnife = ITEMS.register("kitchen_knife",
             () -> new KitchenKnifeItem(Tiers.IRON, 2, -1.8f, new Item.Properties()));
+
+    public static final RegistryObject<Item> StopSign = ITEMS.register("stop_sign",
+            () -> new StopSignItem(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

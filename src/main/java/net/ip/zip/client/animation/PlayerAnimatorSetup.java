@@ -15,7 +15,7 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ZIP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class PlayerAnimatorSetup {
-    private static final List<String> KEYS = List.of("yamato_animation", "bat_animation", "medical_animation", "machete_animation", "kitchen_knife_animation");
+    private static final List<String> KEYS = List.of("yamato_animation", "bat_animation", "medical_animation", "machete_animation", "kitchen_knife_animation", "stop_sign_animation");
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {

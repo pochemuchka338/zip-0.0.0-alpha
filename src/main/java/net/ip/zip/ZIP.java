@@ -2,6 +2,7 @@ package net.ip.zip;
 
 import com.mojang.logging.LogUtils;
 import net.ip.zip.block.ModBlocks;
+import net.ip.zip.block.entity.ModBlockEntities;
 import net.ip.zip.creativeTab.CreativeTabs;
 import net.ip.zip.entity.ModEntities;
 import net.ip.zip.item.ModItem;
@@ -33,6 +34,7 @@ public class ZIP {
         ModItem.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
@@ -64,6 +66,7 @@ public class ZIP {
             event.registerEntityRenderer(ModEntities.METEOR.get(), net.ip.zip.client.renderer.MeteorRenderer::new);
             event.registerEntityRenderer(ModEntities.GRENADE.get(), context -> new net.ip.zip.client.renderer.GrenadeRenderer(context));
             event.registerEntityRenderer(ModEntities.MOLOTOV.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context));
+            event.registerBlockEntityRenderer(ModBlockEntities.STOP_SIGN.get(), context -> new net.ip.zip.client.renderer.StopSignBlockRenderer());
         }
     }
 }

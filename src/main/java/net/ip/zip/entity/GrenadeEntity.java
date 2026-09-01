@@ -1,22 +1,29 @@
 package net.ip.zip.entity;
 
 import net.ip.zip.item.ModItem;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class GrenadeEntity extends ThrowableItemProjectile {
     private int fuse = 100;
     private boolean exploding = false;
+    private boolean hasBounced = false;
+    private int groundTicks = 0;
 
     private float rotX;
     private float rotY;
@@ -25,14 +32,32 @@ public class GrenadeEntity extends ThrowableItemProjectile {
     private float rotSpeedY;
     private float rotSpeedZ;
 
+    private double lastTickX;
+    private double lastTickY;
+    private double lastTickZ;
+
+    private static final float GRAVITY = 0.045F;
+    private static final double AIR_DRAG = 0.985D;
+    private static final double FIRST_BOUNCE_HORIZONTAL = 0.5D;
+    private static final double FIRST_BOUNCE_VERTICAL = 0.25D;
+    private static final double AFTER_BOUNCE_FRICTION = 0.62D;
+    private static final double GROUND_FRICTION = 0.76D;
+    private static final double STOP_SPEED_SQR = 0.009D;
+
     public GrenadeEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
         initRotation();
+        this.lastTickX = this.getX();
+        this.lastTickY = this.getY();
+        this.lastTickZ = this.getZ();
     }
 
     public GrenadeEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity shooter, Level level) {
         super(entityType, shooter, level);
         initRotation();
+        this.lastTickX = this.getX();
+        this.lastTickY = this.getY();
+        this.lastTickZ = this.getZ();
     }
 
     private void initRotation() {
@@ -47,6 +72,11 @@ public class GrenadeEntity extends ThrowableItemProjectile {
     @Override
     protected Item getDefaultItem() {
         return ModItem.Grenade.get();
+    }
+
+    @Override
+    protected float getGravity() {
+        return GRAVITY;
     }
 
     @Override
@@ -73,86 +103,113 @@ public class GrenadeEntity extends ThrowableItemProjectile {
         if (!this.level().isClientSide) {
             this.setSharedFlag(6, this.isCurrentlyGlowing());
         }
-        this.baseTick();
+
+        super.tick();
+
         if (!this.isAlive()) return;
 
-        boolean wasOnGround = this.onGround();
-
-        Vec3 motionBefore = this.getDeltaMovement();
-        if (!wasOnGround) {
-            motionBefore = motionBefore.add(0, -0.04, 0);
-            this.setDeltaMovement(motionBefore);
-        }
-
-        double oldX = this.getX();
-        double oldY = this.getY();
-        double oldZ = this.getZ();
-
-        this.move(MoverType.SELF, motionBefore);
-
-        double expectedX = oldX + motionBefore.x;
-        double expectedY = oldY + motionBefore.y;
-        double expectedZ = oldZ + motionBefore.z;
-
-        boolean hitX = Math.abs(this.getX() - expectedX) > 0.001 && Math.abs(motionBefore.x) > 0.001;
-        boolean hitZ = Math.abs(this.getZ() - expectedZ) > 0.001 && Math.abs(motionBefore.z) > 0.001;
-        boolean hitYDown = (this.getY() - expectedY) > 0.001 && motionBefore.y < -0.05;
-        boolean hitYUp = (expectedY - this.getY()) > 0.001 && motionBefore.y > 0.001;
-
-        boolean bounced = false;
-
-        if (hitX || hitZ) {
-            this.setDeltaMovement(-motionBefore.x * 0.2, this.getDeltaMovement().y, -motionBefore.z * 0.2);
-            bounced = true;
-        }
-
-        if (hitYDown && !wasOnGround) {
-            double bounceY = -motionBefore.y * 0.5;
-            if (bounceY < 0.06) {
-                this.setDeltaMovement(this.getDeltaMovement().x * 0.2, 0, this.getDeltaMovement().z * 0.2);
-            } else {
-                this.setDeltaMovement(this.getDeltaMovement().x * 0.2, bounceY, this.getDeltaMovement().z * 0.2);
-            }
-            bounced = true;
-        }
-
-        if (hitYUp) {
-            this.setDeltaMovement(this.getDeltaMovement().x, -motionBefore.y * 0.3, this.getDeltaMovement().z);
-            bounced = true;
-        }
-
-        if (this.onGround() && !bounced) {
-            Vec3 motion = this.getDeltaMovement();
-            this.setDeltaMovement(motion.x * 0.9, 0, motion.z * 0.9);
-        }
-
-        if (bounced && !this.level().isClientSide) {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
-                    SoundEvents.STONE_HIT, SoundSource.NEUTRAL, 0.3f, 0.9f + this.random.nextFloat() * 0.2f);
-        }
-
         if (!this.level().isClientSide) {
+            Vec3 motion = this.getDeltaMovement();
+
+            if (this.onGround()) {
+                this.groundTicks++;
+                this.setDeltaMovement(motion.x * GROUND_FRICTION, 0, motion.z * GROUND_FRICTION);
+
+                if (motion.horizontalDistanceSqr() <= STOP_SPEED_SQR && this.groundTicks > 10) {
+                    this.setDeltaMovement(0, 0, 0);
+                }
+            } else {
+                this.groundTicks = 0;
+                if (!this.hasBounced) {
+                    this.setDeltaMovement(motion.scale(AIR_DRAG));
+                }
+            }
+
             fuse--;
             if (fuse <= 0) {
                 explode();
             }
         } else {
-            if (!this.onGround() || motionBefore.y > 0) {
-                this.rotX += this.rotSpeedX;
-                this.rotY += this.rotSpeedY;
-                this.rotZ += this.rotSpeedZ;
-            } else {
-                this.rotSpeedX *= 0.75f;
-                this.rotSpeedY *= 0.75f;
-                this.rotSpeedZ *= 0.75f;
-                if (Math.abs(this.rotSpeedX) > 0.1f || Math.abs(this.rotSpeedY) > 0.1f || Math.abs(this.rotSpeedZ) > 0.1f) {
-                    this.rotX += this.rotSpeedX;
-                    this.rotY += this.rotSpeedY;
-                    this.rotZ += this.rotSpeedZ;
-                }
-            }
+            double dx = this.getX() - this.lastTickX;
+            double dy = this.getY() - this.lastTickY;
+            double dz = this.getZ() - this.lastTickZ;
+            double speed = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            float damp = (float) Mth.clamp(0.25 + speed * 6.0, 0.25, 0.97);
+            this.rotSpeedX *= damp;
+            this.rotSpeedY *= damp;
+            this.rotSpeedZ *= damp;
+
+            this.rotX += this.rotSpeedX;
+            this.rotY += this.rotSpeedY;
+            this.rotZ += this.rotSpeedZ;
+
+            this.lastTickX = this.getX();
+            this.lastTickY = this.getY();
+            this.lastTickZ = this.getZ();
+
             this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.05, this.getZ(), 0.0, 0.02, 0.0);
         }
+    }
+
+    @Override
+    protected void onHit(HitResult result) {
+        if (this.exploding || !this.isAlive()) return;
+
+        if (result.getType() == HitResult.Type.BLOCK) {
+            this.bounceFromBlock((BlockHitResult) result);
+        } else if (result.getType() == HitResult.Type.ENTITY) {
+            this.bounceFromEntity((EntityHitResult) result);
+        }
+    }
+
+    private void bounceFromBlock(BlockHitResult result) {
+        Vec3 motion = this.getDeltaMovement();
+        Direction.Axis axis = result.getDirection().getAxis();
+
+        if (!this.hasBounced) {
+            this.hasBounced = true;
+            switch (axis) {
+                case Y -> {
+                    if (result.getDirection() == Direction.UP) {
+                        double bounceY = Math.abs(motion.y) * FIRST_BOUNCE_VERTICAL;
+                        if (bounceY < 0.10) {
+                            this.setDeltaMovement(motion.x * GROUND_FRICTION, 0, motion.z * GROUND_FRICTION);
+                        } else {
+                            this.setDeltaMovement(motion.x * FIRST_BOUNCE_HORIZONTAL, bounceY, motion.z * FIRST_BOUNCE_HORIZONTAL);
+                        }
+                    } else {
+                        this.setDeltaMovement(motion.x * FIRST_BOUNCE_HORIZONTAL, -Math.abs(motion.y) * 0.2, motion.z * FIRST_BOUNCE_HORIZONTAL);
+                    }
+                }
+                case X -> this.setDeltaMovement(-motion.x * FIRST_BOUNCE_HORIZONTAL, motion.y * FIRST_BOUNCE_VERTICAL, motion.z * FIRST_BOUNCE_HORIZONTAL);
+                case Z -> this.setDeltaMovement(motion.x * FIRST_BOUNCE_HORIZONTAL, motion.y * FIRST_BOUNCE_VERTICAL, -motion.z * FIRST_BOUNCE_HORIZONTAL);
+            }
+        } else {
+            switch (axis) {
+                case Y -> this.setDeltaMovement(motion.x * GROUND_FRICTION, 0, motion.z * GROUND_FRICTION);
+                case X -> this.setDeltaMovement(-motion.x * AFTER_BOUNCE_FRICTION, motion.y * 0.15, motion.z * AFTER_BOUNCE_FRICTION);
+                case Z -> this.setDeltaMovement(motion.x * AFTER_BOUNCE_FRICTION, motion.y * 0.15, -motion.z * AFTER_BOUNCE_FRICTION);
+            }
+        }
+
+        if (!this.level().isClientSide) {
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
+                    SoundEvents.STONE_HIT, SoundSource.NEUTRAL, 0.3f, 0.9f + this.random.nextFloat() * 0.2f);
+        }
+    }
+
+    private void bounceFromEntity(EntityHitResult result) {
+        if (!this.level().isClientSide) {
+            Entity entity = result.getEntity();
+            if (entity instanceof LivingEntity living) {
+                living.hurt(this.damageSources().thrown(this, this.getOwner()), 1.0F);
+            }
+        }
+
+        Vec3 motion = this.getDeltaMovement();
+        this.setDeltaMovement(-motion.x * 0.4, Math.max(0.1, motion.y * 0.25), -motion.z * 0.4);
+        this.hasBounced = true;
     }
 
     private void explode() {

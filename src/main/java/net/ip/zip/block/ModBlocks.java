@@ -20,13 +20,8 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, ZIP.MOD_ID);
 
-    // Block
-
     public static final RegistryObject<Block> AluminumBlock = registerBlock("aluminum_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
-
-
-    // ORE
 
     public static final RegistryObject<Block> AluminumOre = registerBlock("aluminum_ore",
             () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)
@@ -36,7 +31,9 @@ public class ModBlocks {
             () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_IRON_ORE)
                     .strength(2f).requiresCorrectToolForDrops(), UniformInt.of(1, 3)));
 
-
+    public static final RegistryObject<Block> StopSign = BLOCKS.register("stop_sign",
+            () -> new StopSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)
+                    .strength(2f).requiresCorrectToolForDrops().noOcclusion()));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -44,7 +41,7 @@ public class ModBlocks {
         return toReturn;
     }
 
-    private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
+    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
         return ModItem.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
