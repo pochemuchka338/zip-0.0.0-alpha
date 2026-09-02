@@ -33,6 +33,20 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("molotov"));
 
+    public static final RegistryObject<EntityType<SmokeGrenadeEntity>> SMOKE_GRENADE = ENTITIES.register("smoke_grenade",
+            () -> EntityType.Builder.<SmokeGrenadeEntity>of(SmokeGrenadeEntity::new, MobCategory.MISC)
+                    .sized(0.125f, 0.125f)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("smoke_grenade"));
+
+    public static final RegistryObject<EntityType<StunGrenadeEntity>> STUN_GRENADE = ENTITIES.register("stun_grenade",
+            () -> EntityType.Builder.<StunGrenadeEntity>of(StunGrenadeEntity::new, MobCategory.MISC)
+                    .sized(0.125f, 0.125f)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("stun_grenade"));
+
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
     }

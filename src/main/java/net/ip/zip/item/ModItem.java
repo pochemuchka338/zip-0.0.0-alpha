@@ -3,12 +3,13 @@ package net.ip.zip.item;
 import net.ip.zip.item.armor.BulletproofVestItem;
 import net.ip.zip.item.grenades.Grenade;
 import net.ip.zip.item.grenades.Molotov;
+import net.ip.zip.item.grenades.SmokeGrenade;
+import net.ip.zip.item.grenades.StunGrenade;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
 
 public class ModItem {
     public static final DeferredRegister<Item> ITEMS =
@@ -43,6 +44,12 @@ public class ModItem {
 
     public static final RegistryObject<Item> Molotov = ITEMS.register("molotov",
             () ->  new Molotov(new Item.Properties().stacksTo(16)));
+
+    public static final RegistryObject<Item> SmokeGrenade = ITEMS.register("smoke_grenade",
+            () ->  new SmokeGrenade(new Item.Properties().stacksTo(16)));
+
+    public static final RegistryObject<Item> StunGrenade = ITEMS.register("stun_grenade",
+            () ->  new StunGrenade(new Item.Properties().stacksTo(16)));
 
     public static final RegistryObject<Item> Medkit = ITEMS.register("medkit",
             () -> new MedicalItem("medkit", "medkit_use", 16.0f, 58, new Item.Properties().stacksTo(1)));

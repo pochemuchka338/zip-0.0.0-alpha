@@ -1,7 +1,8 @@
 package net.ip.zip.item;
 
 import net.ip.zip.client.animation.AnimationHandler;
-import net.ip.zip.client.renderer.MedicalItemRenderer;
+import net.ip.zip.client.renderer.SimpleGeoItemRenderer;
+import net.ip.zip.client.model.MedicalItemModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
@@ -71,7 +72,7 @@ public class MedicalItem extends Item implements GeoItem {
             return InteractionResultHolder.pass(stack);
         }
         player.startUsingItem(hand);
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             AnimationHandler.play((AbstractClientPlayer) player, DATA_KEY, animName, true);
         }
         return InteractionResultHolder.consume(stack);
@@ -79,20 +80,20 @@ public class MedicalItem extends Item implements GeoItem {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeCharged) {
-        if (level.isClientSide && entity instanceof AbstractClientPlayer player) {
+        if (level.isClientSide() && entity instanceof AbstractClientPlayer player) {
             AnimationHandler.stop(player, DATA_KEY);
         }
     }
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (!level.isClientSide && entity instanceof Player player) {
+        if (!level.isClientSide() && entity instanceof Player player) {
             player.heal(healAmount);
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
         }
-        if (level.isClientSide && entity instanceof AbstractClientPlayer player) {
+        if (level.isClientSide() && entity instanceof AbstractClientPlayer player) {
             AnimationHandler.stop(player, DATA_KEY);
         }
         return stack;
@@ -130,12 +131,12 @@ public class MedicalItem extends Item implements GeoItem {
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-            private MedicalItemRenderer renderer;
+            private BlockEntityWithoutLevelRenderer renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null)
-                    this.renderer = new MedicalItemRenderer();
+                    this.renderer = new SimpleGeoItemRenderer<>(new MedicalItemModel());
                 return this.renderer;
             }
         });

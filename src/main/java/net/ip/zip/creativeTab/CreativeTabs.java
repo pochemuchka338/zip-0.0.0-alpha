@@ -36,6 +36,8 @@ public class CreativeTabs {
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItem.Grenade.get());
                         pOutput.accept(ModItem.Molotov.get());
+                        pOutput.accept(ModItem.SmokeGrenade.get());
+                        pOutput.accept(ModItem.StunGrenade.get());
                         pOutput.accept(WeaponItem.Pitchfork.get());
                         pOutput.accept(WeaponItem.Yamato.get());
                         pOutput.accept(WeaponItem.WoodenBat.get());

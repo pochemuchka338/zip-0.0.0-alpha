@@ -8,7 +8,7 @@ import software.bernie.geckolib.model.GeoModel;
 public class BatItemModel extends GeoModel<BaseballBatItem> {
     @Override
     public ResourceLocation getModelResource(BaseballBatItem animatable) {
-        return new ResourceLocation(ZIP.MOD_ID, "geo/" + animatable.getBatName() + ".geo.json");
+        return new ResourceLocation(ZIP.MOD_ID, "geo/weapons/" + animatable.getBatName() + ".geo.json");
     }
 
     @Override

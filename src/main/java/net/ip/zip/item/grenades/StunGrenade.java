@@ -1,6 +1,6 @@
 package net.ip.zip.item.grenades;
 
-import net.ip.zip.client.model.MolotovItemModel;
+import net.ip.zip.client.model.StunGrenadeItemModel;
 import net.ip.zip.client.renderer.SimpleGeoItemRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.sounds.SoundEvents;
@@ -22,23 +22,21 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
 
-public class Molotov extends Item implements GeoItem {
+public class StunGrenade extends Item implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public Molotov(Properties pProperties) {
+    public StunGrenade(Properties pProperties) {
         super(pProperties);
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack item = player.getItemInHand(hand);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F,
-                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
-            net.ip.zip.entity.MolotovEntity molotov = new net.ip.zip.entity.MolotovEntity(net.ip.zip.entity.ModEntities.MOLOTOV.get(), player, level);
-            molotov.setItem(item);
-            molotov.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.2F, 1.0F);
-            level.addFreshEntity(molotov);
+            net.ip.zip.entity.StunGrenadeEntity stun = new net.ip.zip.entity.StunGrenadeEntity(net.ip.zip.entity.ModEntities.STUN_GRENADE.get(), player, level);
+            stun.setItem(item);
+            stun.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+            level.addFreshEntity(stun);
         }
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!player.getAbilities().instabuild) {
@@ -65,7 +63,7 @@ public class Molotov extends Item implements GeoItem {
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null)
-                    this.renderer = new SimpleGeoItemRenderer<>(new MolotovItemModel());
+                    this.renderer = new SimpleGeoItemRenderer<>(new StunGrenadeItemModel());
                 return this.renderer;
             }
         });

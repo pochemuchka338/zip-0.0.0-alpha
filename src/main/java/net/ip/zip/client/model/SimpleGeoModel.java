@@ -10,7 +10,7 @@ public class SimpleGeoModel<T extends software.bernie.geckolib.animatable.GeoIte
     private final String animationPath;
 
     public SimpleGeoModel(String name) {
-        this.modelPath = "geo/" + name + ".geo.json";
+        this.modelPath = "geo/weapons/" + name + ".geo.json";
         this.texturePath = "textures/item/" + name + ".png";
         this.animationPath = "animations/" + name + ".animation.json";
     }

@@ -1,7 +1,8 @@
 package net.ip.zip.item.grenades;
 
-import net.ip.zip.entity.GrenadeEntity;
-import net.ip.zip.entity.ModEntities;
+import net.ip.zip.client.model.GrenadeItemModel;
+import net.ip.zip.client.renderer.SimpleGeoItemRenderer;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -11,8 +12,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class Grenade extends Item {
+import java.util.function.Consumer;
+
+public class Grenade extends Item implements GeoItem {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
     public Grenade(Properties pProperties) {
         super(pProperties);
     }
@@ -21,7 +33,7 @@ public class Grenade extends Item {
         ItemStack item = player.getItemInHand(hand);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
-            GrenadeEntity grenade = new GrenadeEntity(ModEntities.GRENADE.get(), player, level);
+            net.ip.zip.entity.GrenadeEntity grenade = new net.ip.zip.entity.GrenadeEntity(net.ip.zip.entity.ModEntities.GRENADE.get(), player, level);
             grenade.setItem(item);
             grenade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
             level.addFreshEntity(grenade);
@@ -31,5 +43,29 @@ public class Grenade extends Item {
             item.shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(item, level.isClientSide());
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 0, state -> PlayState.STOP));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private SimpleGeoItemRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null)
+                    this.renderer = new SimpleGeoItemRenderer<>(new GrenadeItemModel());
+                return this.renderer;
+            }
+        });
     }
 }

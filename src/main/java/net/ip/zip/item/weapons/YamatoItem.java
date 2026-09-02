@@ -26,7 +26,7 @@ public class YamatoItem extends GeoWeaponItem {
     private static final RawAnimation SHEATH_ANIM = RawAnimation.begin().thenPlay("sheath").thenLoop("idle");
 
     public YamatoItem(Properties properties) {
-        super(Tiers.NETHERITE, 0, -2.4f, properties.durability(1000), "Yamato block", "a1b2c3d4-e5f6-7890-abcd-ef1234567890");
+        super(Tiers.NETHERITE, 0, -2.4f, properties.durability(1000), "Yamato block", "a1b2c3d4-e5f6-7890-abcd-ef1234567890", true);
     }
 
     public static boolean isSheathed(ItemStack stack) {

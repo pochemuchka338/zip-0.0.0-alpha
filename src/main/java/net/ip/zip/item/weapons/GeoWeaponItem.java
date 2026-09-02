@@ -28,33 +28,39 @@ import java.util.function.Consumer;
 public abstract class GeoWeaponItem extends SwordItem implements GeoItem {
     protected final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     protected final AttributeModifier blockSlow;
+    protected final boolean canBlock;
 
-    protected GeoWeaponItem(Tiers tier, int attackDamage, float attackSpeed, Properties properties, String slowName, String slowUuid) {
+    protected GeoWeaponItem(Tiers tier, int attackDamage, float attackSpeed, Properties properties, String slowName, String slowUuid, boolean canBlock) {
         super(tier, attackDamage, attackSpeed, properties);
+        this.canBlock = canBlock;
         this.blockSlow = new AttributeModifier(UUID.fromString(slowUuid), slowName, -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
     @Override
     public int getUseDuration(ItemStack stack) {
-        return 72000;
+        return canBlock ? 72000 : 0;
     }
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BLOCK;
+        return canBlock ? UseAnim.BLOCK : UseAnim.NONE;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        player.startUsingItem(hand);
-        return InteractionResultHolder.consume(stack);
+        if (canBlock) {
+            player.startUsingItem(hand);
+            return InteractionResultHolder.consume(stack);
+        }
+        return InteractionResultHolder.pass(stack);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
+        if (!canBlock) return;
         if (entity instanceof Player player && isSelected) {
             var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attr != null) {
