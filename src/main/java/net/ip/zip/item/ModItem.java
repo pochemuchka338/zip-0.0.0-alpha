@@ -1,6 +1,8 @@
 package net.ip.zip.item;
 
 import net.ip.zip.item.armor.BulletproofVestItem;
+import net.ip.zip.item.armor.ProtectiveRespiratorItem;
+import net.ip.zip.item.armor.RespiratorItem;
 import net.ip.zip.item.grenades.Grenade;
 import net.ip.zip.item.grenades.Molotov;
 import net.ip.zip.item.grenades.SmokeGrenade;
@@ -59,6 +61,15 @@ public class ModItem {
 
     public static final RegistryObject<Item> BulletproofVest = ITEMS.register("bulletproof_vest",
             () -> new BulletproofVestItem(ModArmorMaterials.BULLETPROOF, new Item.Properties()));
+
+    public static final RegistryObject<Item> Respirator = ITEMS.register("respirator",
+            () -> new RespiratorItem(ModArmorMaterials.RESPIRATOR, new Item.Properties()));
+
+    public static final RegistryObject<Item> ProtectiveRespirator = ITEMS.register("protective_respirator",
+            () -> new ProtectiveRespiratorItem(ModArmorMaterials.PROTECTIVE_RESPIRATOR, new Item.Properties()));
+
+    public static final RegistryObject<Item> Binoculars = ITEMS.register("binoculars",
+            () -> new BinocularsItem(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

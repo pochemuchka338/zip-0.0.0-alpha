@@ -3,6 +3,7 @@ package net.ip.zip;
 import com.mojang.logging.LogUtils;
 import net.ip.zip.block.ModBlocks;
 import net.ip.zip.block.entity.ModBlockEntities;
+import net.ip.zip.command.ModCommands;
 import net.ip.zip.creativeTab.CreativeTabs;
 import net.ip.zip.effect.ModEffects;
 import net.ip.zip.entity.ModEntities;
@@ -30,7 +31,6 @@ public class ZIP {
 
     public ZIP(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-
         ModEffects.register(modEventBus);
         CreativeTabs.register(modEventBus);
         WeaponItem.register(modEventBus);
@@ -39,13 +39,10 @@ public class ZIP {
         ModEntities.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModParticles.register(modEventBus);
-
         modEventBus.addListener(this::commonSetup);
-
         MinecraftForge.EVENT_BUS.register(this);
-
+        MinecraftForge.EVENT_BUS.register(ModCommands.class);
         modEventBus.addListener(this::addCreative);
-
         ModMessages.register();
     }
 
@@ -68,10 +65,10 @@ public class ZIP {
         @SubscribeEvent
         public static void registerRenderers(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ModEntities.METEOR.get(), net.ip.zip.client.renderer.MeteorRenderer::new);
-            event.registerEntityRenderer(ModEntities.GRENADE.get(), net.ip.zip.client.renderer.GrenadeRenderer::new);
+            event.registerEntityRenderer(ModEntities.GRENADE.get(), net.ip.zip.client.renderer.ThrownItemRenderer::new);
             event.registerEntityRenderer(ModEntities.MOLOTOV.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context));
-            event.registerEntityRenderer(ModEntities.SMOKE_GRENADE.get(), net.ip.zip.client.renderer.SmokeGrenadeRenderer::new);
-            event.registerEntityRenderer(ModEntities.STUN_GRENADE.get(), net.ip.zip.client.renderer.StunGrenadeRenderer::new);
+            event.registerEntityRenderer(ModEntities.SMOKE_GRENADE.get(), net.ip.zip.client.renderer.ThrownItemRenderer::new);
+            event.registerEntityRenderer(ModEntities.STUN_GRENADE.get(), net.ip.zip.client.renderer.ThrownItemRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.STOP_SIGN.get(), context -> new net.ip.zip.client.renderer.StopSignBlockRenderer());
         }
 

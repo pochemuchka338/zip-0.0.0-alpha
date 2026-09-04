@@ -45,47 +45,34 @@ public class ServerEvents {
         if (!isHeavyLocked(player)) return;
         player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
         player.hurtMarked = true;
-        if (player.isUsingItem()) {
-            player.stopUsingItem();
-        }
+        if (player.isUsingItem()) player.stopUsingItem();
     }
 
     @SubscribeEvent
     public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (isHeavyLocked(player)) {
+        if (event.getEntity() instanceof ServerPlayer player && isHeavyLocked(player)) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onLivingAttack(LivingAttackEvent event) {
-        if (event.getEntity().level().isClientSide) return;
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-
+        if (event.getEntity().level().isClientSide || !(event.getEntity() instanceof ServerPlayer player)) return;
         if (isHeavyLocked(player)) {
             event.setCanceled(true);
             return;
         }
-
         ItemStack stack = player.getMainHandItem();
-
-        if (stack.getItem() instanceof YamatoItem) {
-            if (!YamatoItem.isSheathed(stack)) return;
-            if (!player.isUsingItem()) return;
+        if (stack.getItem() instanceof YamatoItem && YamatoItem.isSheathed(stack) && player.isUsingItem()) {
             event.setCanceled(true);
-            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0f, 1.0f);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0f, 1.0f);
             stack.hurtAndBreak(1, player, (p) -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
             ModMessages.sendToPlayer(new PlayAnimS2CPacket("yamato_animation", "block_damage", true), player);
             return;
         }
-
-        if (stack.getItem() instanceof BaseballBatItem) {
-            if (!player.isUsingItem()) return;
+        if (stack.getItem() instanceof BaseballBatItem && player.isUsingItem()) {
             event.setCanceled(true);
-            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0f, 1.0f);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0f, 1.0f);
             stack.hurtAndBreak(1, player, (p) -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
             ModMessages.sendToPlayer(new PlayAnimS2CPacket("bat_animation", "bat_block_damage", false), player);
         }

@@ -2,7 +2,13 @@ package net.ip.zip.client;
 
 import net.ip.zip.ZIP;
 import net.ip.zip.client.animation.AnimationHandler;
-import net.ip.zip.client.layer.BulletproofVestLayer;
+import net.ip.zip.client.layer.GeoArmorLayer;
+import net.ip.zip.client.renderer.BulletproofVestRenderer;
+import net.ip.zip.client.renderer.ProtectiveRespiratorRenderer;
+import net.ip.zip.client.renderer.RespiratorRenderer;
+import net.ip.zip.item.armor.BulletproofVestItem;
+import net.ip.zip.item.armor.ProtectiveRespiratorItem;
+import net.ip.zip.item.armor.RespiratorItem;
 import net.ip.zip.item.weapons.YamatoItem;
 import net.ip.zip.network.ModMessages;
 import net.ip.zip.network.packet.ToggleSheathC2SPacket;
@@ -10,6 +16,7 @@ import net.ip.zip.network.packet.WeaponAttackC2SPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,15 +67,11 @@ public class ClientEvents {
         String curAnim = currentAnim.getOrDefault(uuid, "");
 
         if ("heavy_blow".equals(curAnim) || "heavy_blow_sheath".equals(curAnim)) {
-            if (AnimationHandler.isPlaying(player, DATA_KEY)) {
-                return;
-            }
+            if (AnimationHandler.isPlaying(player, DATA_KEY)) return;
             currentAnim.remove(uuid);
         }
 
-        if (ONE_SHOT.contains(curAnim) && AnimationHandler.isPlaying(player, DATA_KEY)) {
-            return;
-        }
+        if (ONE_SHOT.contains(curAnim) && AnimationHandler.isPlaying(player, DATA_KEY)) return;
 
         if (!attackDown && wasDown) {
             int lastTick = lastAttackTick.getOrDefault(uuid, -ATTACK_COOLDOWN);
@@ -180,7 +183,9 @@ public class ClientEvents {
             var renderer = event.getSkin(skin);
             if (renderer instanceof LivingEntityRenderer) {
                 LivingEntityRenderer livingRenderer = (LivingEntityRenderer) renderer;
-                livingRenderer.addLayer(new BulletproofVestLayer(livingRenderer));
+                livingRenderer.addLayer(new GeoArmorLayer<>(livingRenderer, new BulletproofVestRenderer(), EquipmentSlot.CHEST, "bulletproof_vest", BulletproofVestItem.class));
+                livingRenderer.addLayer(new GeoArmorLayer<>(livingRenderer, new RespiratorRenderer(), EquipmentSlot.HEAD, "respirator", RespiratorItem.class));
+                livingRenderer.addLayer(new GeoArmorLayer<>(livingRenderer, new ProtectiveRespiratorRenderer(), EquipmentSlot.HEAD, "protective_respirator", ProtectiveRespiratorItem.class));
             }
         }
     }

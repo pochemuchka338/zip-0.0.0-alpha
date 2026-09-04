@@ -10,7 +10,7 @@ import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class YamatoItemRenderer extends GeoItemRenderer<YamatoItem> {
     public YamatoItemRenderer() {
-        super(new SimpleGeoModel<>("yamato"));
+        super(SimpleGeoModel.weapon("yamato"));
     }
 
     @Override

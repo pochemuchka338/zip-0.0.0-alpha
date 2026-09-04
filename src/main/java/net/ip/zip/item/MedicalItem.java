@@ -1,8 +1,8 @@
 package net.ip.zip.item;
 
 import net.ip.zip.client.animation.AnimationHandler;
+import net.ip.zip.client.model.SimpleGeoModel;
 import net.ip.zip.client.renderer.SimpleGeoItemRenderer;
-import net.ip.zip.client.model.MedicalItemModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
@@ -49,10 +49,6 @@ public class MedicalItem extends Item implements GeoItem {
 
     public String getModelName() {
         return modelName;
-    }
-
-    public int getUseDuration() {
-        return useDuration;
     }
 
     @Override
@@ -132,11 +128,10 @@ public class MedicalItem extends Item implements GeoItem {
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private BlockEntityWithoutLevelRenderer renderer;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null)
-                    this.renderer = new SimpleGeoItemRenderer<>(new MedicalItemModel());
+                    this.renderer = new SimpleGeoItemRenderer<>(SimpleGeoModel.medical(modelName));
                 return this.renderer;
             }
         });

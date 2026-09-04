@@ -11,7 +11,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.function.Supplier;
 
 public enum ModArmorMaterials implements ArmorMaterial {
-    BULLETPROOF("bulletproof", 25, new int[]{2, 5, 7, 2}, 12, SoundEvents.ARMOR_EQUIP_IRON, 1.0f, 0.15f, () -> Ingredient.of(Items.IRON_INGOT));
+    BULLETPROOF("bulletproof", 25, new int[]{2, 5, 7, 2}, 12, SoundEvents.ARMOR_EQUIP_IRON, 1.0f, 0.15f, () -> Ingredient.of(Items.IRON_INGOT)),
+    RESPIRATOR("respirator", 10, new int[]{1, 1, 1, 1}, 5, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0f, 0.0f, () -> Ingredient.of(Items.LEATHER)),
+    PROTECTIVE_RESPIRATOR("protective_respirator", 18, new int[]{2, 3, 5, 2}, 8, SoundEvents.ARMOR_EQUIP_IRON, 1.0f, 0.0f, () -> Ingredient.of(Items.IRON_INGOT));
 
     private final String name;
     private final int durabilityMultiplier;

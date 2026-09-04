@@ -35,8 +35,10 @@ public class WeaponClientEvents {
         final String movePrefix;
         final boolean hasBlock;
         final Class<? extends Item> clazz;
+        final Set<String> oneShots;
 
-        Config(String dataKey, int cooldown, int heavyCharge, String[] hits, String heavy, String block, String blockDamage, String movePrefix, boolean hasBlock, Class<? extends Item> clazz) {
+        Config(String dataKey, int cooldown, int heavyCharge, String[] hits, String heavy,
+               String block, String blockDamage, String movePrefix, boolean hasBlock, Class<? extends Item> clazz) {
             this.dataKey = dataKey;
             this.cooldown = cooldown;
             this.heavyCharge = heavyCharge;
@@ -47,6 +49,11 @@ public class WeaponClientEvents {
             this.movePrefix = movePrefix;
             this.hasBlock = hasBlock;
             this.clazz = clazz;
+            Set<String> set = new HashSet<>();
+            set.add(heavy);
+            for (String h : hits) set.add(h);
+            if (blockDamage != null) set.add(blockDamage);
+            this.oneShots = Collections.unmodifiableSet(set);
         }
     }
 
@@ -104,18 +111,13 @@ public class WeaponClientEvents {
         int heldTicks = state.attackHeldTicks;
         String curAnim = state.currentAnim;
 
-        Set<String> oneShots = new HashSet<>();
-        oneShots.add(config.heavy);
-        for (String h : config.hits) oneShots.add(h);
-        if (config.blockDamage != null) oneShots.add(config.blockDamage);
-
         if (config.heavy.equals(curAnim)) {
             if (AnimationHandler.isPlaying(player, config.dataKey)) return;
             state.currentAnim = "";
             curAnim = "";
         }
 
-        if (oneShots.contains(curAnim) && AnimationHandler.isPlaying(player, config.dataKey)) {
+        if (config.oneShots.contains(curAnim) && AnimationHandler.isPlaying(player, config.dataKey)) {
             return;
         }
 

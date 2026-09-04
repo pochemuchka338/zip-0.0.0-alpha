@@ -23,31 +23,24 @@ public class MedicalProgressRenderer {
     public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || !mc.player.isUsingItem()) return;
-
         ItemStack stack = mc.player.getUseItem();
         if (!(stack.getItem() instanceof MedicalItem item)) return;
-
-        int useDuration = item.getUseDuration();
+        int useDuration = item.getUseDuration(stack);
         int remaining = mc.player.getUseItemRemainingTicks();
         if (remaining <= 0 || remaining > useDuration) return;
-
         float progress = Math.min(1.0f, (float) (useDuration - remaining) / (float) useDuration);
-
         int screenW = event.getWindow().getGuiScaledWidth();
         int screenH = event.getWindow().getGuiScaledHeight();
         int barW = TEX_W * SCALE;
         int barH = TEX_H * SCALE;
         int x = screenW / 2 - barW / 2;
         int y = screenH / 2 + 14;
-
         GuiGraphics g = event.getGuiGraphics();
-
         g.pose().pushPose();
         g.pose().translate(x, y, 0);
         g.pose().scale(SCALE, SCALE, 1);
         g.blit(BG, 0, 0, 0, 0, TEX_W, TEX_H, TEX_W, TEX_H);
         g.pose().popPose();
-
         int fillW = (int) (TEX_W * progress);
         if (fillW > 0) {
             g.pose().pushPose();

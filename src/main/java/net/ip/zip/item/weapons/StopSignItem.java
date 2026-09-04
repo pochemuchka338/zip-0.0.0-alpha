@@ -1,8 +1,8 @@
 package net.ip.zip.item.weapons;
 
 import net.ip.zip.block.ModBlocks;
-import net.ip.zip.client.renderer.SimpleGeoItemRenderer;
 import net.ip.zip.client.model.SimpleGeoModel;
+import net.ip.zip.client.renderer.SimpleGeoItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -29,35 +29,28 @@ public class StopSignItem extends GeoWeaponItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos pos = hit.getBlockPos();
             Direction face = hit.getDirection();
             BlockPos placePos = pos.relative(face);
             BlockState stateAt = level.getBlockState(placePos);
             BlockPlaceContext placeContext = new BlockPlaceContext(player, hand, stack, hit);
-
             if (stateAt.canBeReplaced(placeContext)) {
                 BlockState signState = ModBlocks.StopSign.get().defaultBlockState()
                         .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, player.getDirection().getOpposite());
-
                 if (!level.isClientSide()) {
                     level.setBlock(placePos, signState, 3);
                     level.playSound(null, placePos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0f, 0.8f);
-
-                    if (!player.getAbilities().instabuild) {
-                        stack.shrink(1);
-                    }
+                    if (!player.getAbilities().instabuild) stack.shrink(1);
                 }
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             }
         }
-
         return InteractionResultHolder.pass(stack);
     }
 
     @Override
     protected GeoItemRenderer<?> createRenderer() {
-        return new SimpleGeoItemRenderer<>(new SimpleGeoModel<>("stop_sign"));
+        return new SimpleGeoItemRenderer<>(SimpleGeoModel.weapon("stop_sign"));
     }
 }

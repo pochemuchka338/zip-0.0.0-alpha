@@ -2,7 +2,7 @@ package net.ip.zip.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.ip.zip.entity.SmokeGrenadeEntity;
+import net.ip.zip.entity.BaseGrenadeEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -11,18 +11,18 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 
-public class SmokeGrenadeRenderer extends EntityRenderer<SmokeGrenadeEntity> {
-    public SmokeGrenadeRenderer(EntityRendererProvider.Context context) {
+public class ThrownItemRenderer<T extends BaseGrenadeEntity> extends EntityRenderer<T> {
+    public ThrownItemRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SmokeGrenadeEntity entity) {
+    public ResourceLocation getTextureLocation(T entity) {
         return null;
     }
 
     @Override
-    public void render(SmokeGrenadeEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
         poseStack.translate(0.0, 0.15, 0.0);
         poseStack.mulPose(Axis.XP.rotationDegrees(entity.getRotX()));

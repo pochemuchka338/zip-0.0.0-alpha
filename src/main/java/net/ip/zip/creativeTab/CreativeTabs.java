@@ -46,6 +46,9 @@ public class CreativeTabs {
                         pOutput.accept(WeaponItem.KitchenKnife.get());
                         pOutput.accept(WeaponItem.StopSign.get());
                         pOutput.accept(ModItem.BulletproofVest.get());
+                        pOutput.accept(ModItem.Respirator.get());
+                        pOutput.accept(ModItem.ProtectiveRespirator.get());
+                        pOutput.accept(ModItem.Binoculars.get());
                     })
                     .build());
 
