@@ -45,6 +45,7 @@ public class CreativeTabs {
                         pOutput.accept(WeaponItem.Machete.get());
                         pOutput.accept(WeaponItem.KitchenKnife.get());
                         pOutput.accept(WeaponItem.StopSign.get());
+                        pOutput.accept(WeaponItem.Glock.get());
                         pOutput.accept(ModItem.BulletproofVest.get());
                         pOutput.accept(ModItem.Respirator.get());
                         pOutput.accept(ModItem.ProtectiveRespirator.get());
@@ -60,6 +61,8 @@ public class CreativeTabs {
                         pOutput.accept(ModItem.Tomato.get());
                         pOutput.accept(ModItem.CannedTomato.get());
                         pOutput.accept(ModItem.Soda.get());
+                        pOutput.accept(ModItem.ChocolateBar.get());
+                        pOutput.accept(ModItem.WaterBottle.get());
                     })
                     .build());
 

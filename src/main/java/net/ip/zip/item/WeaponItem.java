@@ -2,6 +2,7 @@ package net.ip.zip.item;
 
 import net.ip.zip.ZIP;
 import net.ip.zip.item.weapons.BaseballBatItem;
+import net.ip.zip.item.weapons.GlockItem;
 import net.ip.zip.item.weapons.KitchenKnifeItem;
 import net.ip.zip.item.weapons.MacheteItem;
 import net.ip.zip.item.weapons.StopSignItem;
@@ -37,6 +38,9 @@ public class WeaponItem {
 
     public static final RegistryObject<Item> StopSign = ITEMS.register("stop_sign",
             () -> new StopSignItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> Glock = ITEMS.register("glock",
+            () -> new GlockItem(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

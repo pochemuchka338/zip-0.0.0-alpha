@@ -1,16 +1,10 @@
 package net.ip.zip.network;
 
 import net.ip.zip.ZIP;
-import net.ip.zip.network.packet.FogStateS2CPacket;
-import net.ip.zip.network.packet.MeteorImpactS2CPacket;
-import net.ip.zip.network.packet.PlayAnimS2CPacket;
-import net.ip.zip.network.packet.SuffocationTimerS2CPacket;
-import net.ip.zip.network.packet.ToggleSheathC2SPacket;
-import net.ip.zip.network.packet.WeaponAttackC2SPacket;
+import net.ip.zip.network.packet.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -68,6 +62,36 @@ public class ModMessages {
                 .decoder(SuffocationTimerS2CPacket::new)
                 .encoder(SuffocationTimerS2CPacket::toBytes)
                 .consumerMainThread(SuffocationTimerS2CPacket::handle)
+                .add();
+
+        net.messageBuilder(GunShootC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(GunShootC2SPacket::new)
+                .encoder(GunShootC2SPacket::toBytes)
+                .consumerMainThread(GunShootC2SPacket::handle)
+                .add();
+
+        net.messageBuilder(GunReloadC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(GunReloadC2SPacket::new)
+                .encoder(GunReloadC2SPacket::toBytes)
+                .consumerMainThread(GunReloadC2SPacket::handle)
+                .add();
+
+        net.messageBuilder(GunModeC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(GunModeC2SPacket::new)
+                .encoder(GunModeC2SPacket::toBytes)
+                .consumerMainThread(GunModeC2SPacket::handle)
+                .add();
+
+        net.messageBuilder(GunAimC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(GunAimC2SPacket::new)
+                .encoder(GunAimC2SPacket::toBytes)
+                .consumerMainThread(GunAimC2SPacket::handle)
+                .add();
+
+        net.messageBuilder(GunRecoilS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(GunRecoilS2CPacket::new)
+                .encoder(GunRecoilS2CPacket::toBytes)
+                .consumerMainThread(GunRecoilS2CPacket::handle)
                 .add();
     }
 

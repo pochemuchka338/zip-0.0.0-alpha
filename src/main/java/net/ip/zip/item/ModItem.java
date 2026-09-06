@@ -41,6 +41,12 @@ public class ModItem {
     public static final RegistryObject<Item> Soda = ITEMS.register("soda",
             () ->  new Item(new Item.Properties().food(ModFoods.Soda)));
 
+    public static final RegistryObject<Item> ChocolateBar = ITEMS.register("chocolate_bar",
+            () -> new ChocolateBarItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> WaterBottle = ITEMS.register("water_bottle",
+            () -> new WaterBottleItem(new Item.Properties()));
+
     public static final RegistryObject<Item> Grenade = ITEMS.register("grenade",
             () ->  new Grenade(new Item.Properties().stacksTo(16)));
 

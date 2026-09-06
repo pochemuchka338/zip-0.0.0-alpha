@@ -47,6 +47,13 @@ public class ModEntities {
                     .updateInterval(1)
                     .build("stun_grenade"));
 
+    public static final RegistryObject<EntityType<BulletEntity>> BULLET = ENTITIES.register("bullet",
+            () -> EntityType.Builder.<BulletEntity>of(BulletEntity::new, MobCategory.MISC)
+                    .sized(0.05f, 0.05f)
+                    .clientTrackingRange(128)
+                    .updateInterval(1)
+                    .build("bullet"));
+
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
     }
