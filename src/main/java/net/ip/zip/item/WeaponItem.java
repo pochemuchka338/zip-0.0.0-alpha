@@ -9,6 +9,7 @@ import net.ip.zip.item.weapons.StopSignItem;
 import net.ip.zip.item.weapons.YamatoItem;
 import net.ip.zip.item.weapons.CrowbarItem;
 import net.ip.zip.item.weapons.TrapItem;
+import net.ip.zip.item.weapons.FlashlightItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,6 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class WeaponItem {
+
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, ZIP.MOD_ID);
 
@@ -49,6 +51,9 @@ public class WeaponItem {
 
     public static final RegistryObject<Item> Trap = ITEMS.register("trap",
             () -> new TrapItem(new Item.Properties().durability(300)));
+
+    public static final RegistryObject<Item> Flashlight = ITEMS.register("flashlight",
+            () -> new FlashlightItem(new Item.Properties().durability(300)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

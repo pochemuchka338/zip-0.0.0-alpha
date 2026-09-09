@@ -48,6 +48,7 @@ public class CreativeTabs {
                         pOutput.accept(WeaponItem.Glock.get());
                         pOutput.accept(WeaponItem.Crowbar.get());
                         pOutput.accept(WeaponItem.Trap.get());
+                        pOutput.accept(WeaponItem.Flashlight.get());
                         pOutput.accept(ModItem.BulletproofVest.get());
                         pOutput.accept(ModItem.Respirator.get());
                         pOutput.accept(ModItem.ProtectiveRespirator.get());
