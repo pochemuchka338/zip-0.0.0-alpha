@@ -3,6 +3,7 @@ package net.ip.zip;
 import com.mojang.logging.LogUtils;
 import net.ip.zip.block.ModBlocks;
 import net.ip.zip.block.entity.ModBlockEntities;
+import net.ip.zip.client.ClientEvents;
 import net.ip.zip.command.ModCommands;
 import net.ip.zip.creativeTab.CreativeTabs;
 import net.ip.zip.effect.ModEffects;
@@ -42,6 +43,8 @@ public class ZIP {
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ModCommands.class);
+        MinecraftForge.EVENT_BUS.register(ClientEvents.INSTANCE);
+        modEventBus.register(ClientEvents.ModBusEvents.class);
         modEventBus.addListener(this::addCreative);
         ModMessages.register();
     }
@@ -71,6 +74,7 @@ public class ZIP {
             event.registerEntityRenderer(ModEntities.STUN_GRENADE.get(), net.ip.zip.client.renderer.ThrownItemRenderer::new);
             event.registerEntityRenderer(ModEntities.BULLET.get(), net.ip.zip.client.renderer.BulletRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.STOP_SIGN.get(), context -> new net.ip.zip.client.renderer.StopSignBlockRenderer());
+            event.registerBlockEntityRenderer(ModBlockEntities.TRAP.get(), context -> new net.ip.zip.client.renderer.TrapBlockRenderer(context));
         }
 
         @SubscribeEvent

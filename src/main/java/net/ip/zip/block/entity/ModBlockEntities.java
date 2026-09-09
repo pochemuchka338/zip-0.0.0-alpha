@@ -16,6 +16,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("stop_sign", () ->
                     BlockEntityType.Builder.of(StopSignBlockEntity::new, ModBlocks.StopSign.get()).build(null));
 
+    public static final RegistryObject<BlockEntityType<TrapBlockEntity>> TRAP =
+            BLOCK_ENTITIES.register("trap", () ->
+                    BlockEntityType.Builder.of(TrapBlockEntity::new, ModBlocks.Trap.get()).build(null));
+
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }

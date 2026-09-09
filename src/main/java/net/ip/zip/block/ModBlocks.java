@@ -35,6 +35,10 @@ public class ModBlocks {
             () -> new StopSignBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)
                     .strength(2f).requiresCorrectToolForDrops().noOcclusion()));
 
+    public static final RegistryObject<Block> Trap = BLOCKS.register("trap",
+            () -> new TrapBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)
+                    .strength(2f).requiresCorrectToolForDrops().noOcclusion()));
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

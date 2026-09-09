@@ -1,6 +1,5 @@
 package net.ip.zip.client;
 
-import net.ip.zip.ZIP;
 import net.ip.zip.client.animation.AnimationHandler;
 import net.ip.zip.client.layer.GeoArmorLayer;
 import net.ip.zip.client.renderer.BulletproofVestRenderer;
@@ -19,36 +18,41 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = ZIP.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
-    private static final Map<UUID, String> currentAnim = new HashMap<>();
-    private static final Map<UUID, Integer> sheathHitCounter = new HashMap<>();
-    private static final Map<UUID, Integer> attackHeldTicks = new HashMap<>();
-    private static final Map<UUID, Boolean> wasAttackDown = new HashMap<>();
-    private static final Map<UUID, Integer> lastAttackTick = new HashMap<>();
-    private static final Set<String> ONE_SHOT = Set.of(
+    public static final ClientEvents INSTANCE = new ClientEvents();
+
+    private final Map<UUID, String> currentAnim = new HashMap<>();
+    private final Map<UUID, Integer> sheathHitCounter = new HashMap<>();
+    private final Map<UUID, Integer> attackHeldTicks = new HashMap<>();
+    private final Map<UUID, Boolean> wasAttackDown = new HashMap<>();
+    private final Map<UUID, Integer> lastAttackTick = new HashMap<>();
+    private final Set<String> ONE_SHOT = Set.of(
             "hit", "hit_sheath", "hit_sheath2", "alt_hit_sheath",
             "heavy_blow", "heavy_blow_sheath", "block_damage", "remove_scabbard"
     );
-    private static final int ATTACK_COOLDOWN = 16;
-    private static final int HEAVY_CHARGE_TICKS = 10;
-    private static final String DATA_KEY = "yamato_animation";
+    private final int ATTACK_COOLDOWN = 16;
+    private final int HEAVY_CHARGE_TICKS = 10;
+    private final String DATA_KEY = "yamato_animation";
+
+    private boolean spaceWasPressed = false;
+
+    private ClientEvents() {}
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
+
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         AbstractClientPlayer player = mc.player;
@@ -145,7 +149,26 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void onInteractionKey(InputEvent.InteractionKeyMappingTriggered event) {
+    public void onMovementInput(MovementInputUpdateEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+
+        // Намертво перехватываем и глушим WASD и Прыжки на клиенте
+        if (mc.player.getPersistentData().getBoolean("inBeartrap")) {
+            var input = event.getInput();
+            input.leftImpulse = 0.0F;
+            input.forwardImpulse = 0.0F;
+            input.up = false;
+            input.down = false;
+            input.left = false;
+            input.right = false;
+            input.jumping = false;
+            input.shiftKeyDown = false;
+        }
+    }
+
+    @SubscribeEvent
+    public void onInteractionKey(InputEvent.InteractionKeyMappingTriggered event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         if (mc.player.getMainHandItem().getItem() instanceof YamatoItem) {
@@ -156,13 +179,13 @@ public class ClientEvents {
         }
     }
 
-    private static void playOneShot(AbstractClientPlayer player, String animName, boolean firstPerson) {
+    private void playOneShot(AbstractClientPlayer player, String animName, boolean firstPerson) {
         UUID uuid = player.getUUID();
         AnimationHandler.play(player, DATA_KEY, animName, firstPerson);
         currentAnim.put(uuid, animName);
     }
 
-    private static void clearState(UUID uuid) {
+    private void clearState(UUID uuid) {
         currentAnim.remove(uuid);
         sheathHitCounter.remove(uuid);
         attackHeldTicks.remove(uuid);
@@ -170,7 +193,6 @@ public class ClientEvents {
         lastAttackTick.remove(uuid);
     }
 
-    @Mod.EventBusSubscriber(modid = ZIP.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onAddLayers(EntityRenderersEvent.AddLayers event) {

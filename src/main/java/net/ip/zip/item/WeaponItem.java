@@ -7,6 +7,8 @@ import net.ip.zip.item.weapons.KitchenKnifeItem;
 import net.ip.zip.item.weapons.MacheteItem;
 import net.ip.zip.item.weapons.StopSignItem;
 import net.ip.zip.item.weapons.YamatoItem;
+import net.ip.zip.item.weapons.CrowbarItem;
+import net.ip.zip.item.weapons.TrapItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,6 +43,12 @@ public class WeaponItem {
 
     public static final RegistryObject<Item> Glock = ITEMS.register("glock",
             () -> new GlockItem(new Item.Properties()));
+
+    public static final RegistryObject<Item> Crowbar = ITEMS.register("crowbar",
+            () -> new CrowbarItem(new Item.Properties().durability(500)));
+
+    public static final RegistryObject<Item> Trap = ITEMS.register("trap",
+            () -> new TrapItem(new Item.Properties().durability(300)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
