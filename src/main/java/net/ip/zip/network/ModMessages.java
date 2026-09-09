@@ -93,6 +93,18 @@ public class ModMessages {
                 .encoder(GunRecoilS2CPacket::toBytes)
                 .consumerMainThread(GunRecoilS2CPacket::handle)
                 .add();
+
+        net.messageBuilder(TrapSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(TrapSyncS2CPacket::new)
+                .encoder(TrapSyncS2CPacket::toBytes)
+                .consumerMainThread(TrapSyncS2CPacket::handle)
+                .add();
+
+        net.messageBuilder(TrapSpaceC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(TrapSpaceC2SPacket::new)
+                .encoder(TrapSpaceC2SPacket::toBytes)
+                .consumerMainThread(TrapSpaceC2SPacket::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {

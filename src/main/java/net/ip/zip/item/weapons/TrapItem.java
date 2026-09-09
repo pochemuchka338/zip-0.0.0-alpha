@@ -37,7 +37,6 @@ public class TrapItem extends GeoWeaponItem {
             BlockState stateAt = level.getBlockState(placePos);
             BlockPlaceContext placeContext = new BlockPlaceContext(player, hand, stack, hit);
             if (stateAt.canBeReplaced(placeContext)) {
-                // Теперь абсолютно точно так же, как у знака СТОП:
                 BlockState trapState = ModBlocks.Trap.get().defaultBlockState();
                 if (!level.isClientSide()) {
                     level.setBlock(placePos, trapState, 3);

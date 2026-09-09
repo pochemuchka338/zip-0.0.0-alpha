@@ -10,6 +10,7 @@ import net.ip.zip.item.armor.ProtectiveRespiratorItem;
 import net.ip.zip.item.armor.RespiratorItem;
 import net.ip.zip.item.weapons.YamatoItem;
 import net.ip.zip.network.ModMessages;
+import net.ip.zip.network.packet.TrapSpaceC2SPacket;
 import net.ip.zip.network.packet.ToggleSheathC2SPacket;
 import net.ip.zip.network.packet.WeaponAttackC2SPacket;
 import net.minecraft.client.Minecraft;
@@ -31,7 +32,6 @@ import java.util.UUID;
 
 public class ClientEvents {
     public static final ClientEvents INSTANCE = new ClientEvents();
-
     private final Map<UUID, String> currentAnim = new HashMap<>();
     private final Map<UUID, Integer> sheathHitCounter = new HashMap<>();
     private final Map<UUID, Integer> attackHeldTicks = new HashMap<>();
@@ -44,7 +44,6 @@ public class ClientEvents {
     private final int ATTACK_COOLDOWN = 16;
     private final int HEAVY_CHARGE_TICKS = 10;
     private final String DATA_KEY = "yamato_animation";
-
     private boolean spaceWasPressed = false;
 
     private ClientEvents() {}
@@ -52,9 +51,18 @@ public class ClientEvents {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
-
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
+
+        if (mc.player.getPersistentData().getBoolean("inTrap")) {
+            if (mc.options.keyJump.isDown() && !spaceWasPressed) {
+                ModMessages.sendToServer(new TrapSpaceC2SPacket());
+                spaceWasPressed = true;
+            } else if (!mc.options.keyJump.isDown()) {
+                spaceWasPressed = false;
+            }
+        }
+
         AbstractClientPlayer player = mc.player;
         ItemStack stack = player.getMainHandItem();
         if (!(stack.getItem() instanceof YamatoItem)) {
@@ -87,7 +95,6 @@ public class ClientEvents {
                 }
                 ModMessages.sendToServer(new WeaponAttackC2SPacket(targetId, heavy));
                 lastAttackTick.put(uuid, player.tickCount);
-
                 if (heavy) {
                     String heavyAnim = sheathed ? "heavy_blow_sheath" : "heavy_blow";
                     playOneShot(player, heavyAnim, true);
@@ -112,6 +119,7 @@ public class ClientEvents {
         } else {
             attackHeldTicks.put(uuid, 0);
         }
+
         wasAttackDown.put(uuid, attackDown);
 
         if (ModKeyBindings.TOGGLE_SHEATH.isDown() && player.isShiftKeyDown()) {
@@ -132,7 +140,6 @@ public class ClientEvents {
         double dz = player.getDeltaMovement().z;
         boolean isMoving = dx * dx + dz * dz > 0.001;
         boolean isSprinting = player.isSprinting();
-
         String moveAnim;
         if (isSprinting) {
             moveAnim = "sprinting";
@@ -152,9 +159,7 @@ public class ClientEvents {
     public void onMovementInput(MovementInputUpdateEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-
-        // Намертво перехватываем и глушим WASD и Прыжки на клиенте
-        if (mc.player.getPersistentData().getBoolean("inBeartrap")) {
+        if (mc.player.getPersistentData().getBoolean("inBeartrap") || mc.player.getPersistentData().getBoolean("inTrap")) {
             var input = event.getInput();
             input.leftImpulse = 0.0F;
             input.forwardImpulse = 0.0F;
