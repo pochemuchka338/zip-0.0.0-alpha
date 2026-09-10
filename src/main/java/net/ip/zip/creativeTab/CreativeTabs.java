@@ -24,6 +24,7 @@ public class CreativeTabs {
                         pOutput.accept(ModItem.AluminumNugget.get());
                         pOutput.accept(ModItem.AluminumRaw.get());
                         pOutput.accept(ModItem.Canned.get());
+                        pOutput.accept(ModItem.Battery.get());
                         pOutput.accept(ModBlocks.AluminumBlock.get());
                         pOutput.accept(ModBlocks.AluminumOre.get());
                         pOutput.accept(ModBlocks.DeepslateAluminumOre.get());
@@ -49,6 +50,7 @@ public class CreativeTabs {
                         pOutput.accept(WeaponItem.Crowbar.get());
                         pOutput.accept(WeaponItem.Trap.get());
                         pOutput.accept(WeaponItem.Flashlight.get());
+                        pOutput.accept(WeaponItem.Bullet.get());
                         pOutput.accept(ModItem.BulletproofVest.get());
                         pOutput.accept(ModItem.Respirator.get());
                         pOutput.accept(ModItem.ProtectiveRespirator.get());

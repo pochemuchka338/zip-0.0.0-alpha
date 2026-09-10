@@ -8,8 +8,10 @@ import net.ip.zip.client.renderer.RespiratorRenderer;
 import net.ip.zip.item.armor.BulletproofVestItem;
 import net.ip.zip.item.armor.ProtectiveRespiratorItem;
 import net.ip.zip.item.armor.RespiratorItem;
+import net.ip.zip.item.weapons.GlockItem;
 import net.ip.zip.item.weapons.YamatoItem;
 import net.ip.zip.network.ModMessages;
+import net.ip.zip.network.packet.ReloadGunC2SPacket;
 import net.ip.zip.network.packet.TrapSpaceC2SPacket;
 import net.ip.zip.network.packet.ToggleSheathC2SPacket;
 import net.ip.zip.network.packet.WeaponAttackC2SPacket;
@@ -24,6 +26,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,18 +35,22 @@ import java.util.UUID;
 
 public class ClientEvents {
     public static final ClientEvents INSTANCE = new ClientEvents();
+
     private final Map<UUID, String> currentAnim = new HashMap<>();
     private final Map<UUID, Integer> sheathHitCounter = new HashMap<>();
     private final Map<UUID, Integer> attackHeldTicks = new HashMap<>();
     private final Map<UUID, Boolean> wasAttackDown = new HashMap<>();
     private final Map<UUID, Integer> lastAttackTick = new HashMap<>();
+
     private final Set<String> ONE_SHOT = Set.of(
             "hit", "hit_sheath", "hit_sheath2", "alt_hit_sheath",
             "heavy_blow", "heavy_blow_sheath", "block_damage", "remove_scabbard"
     );
+
     private final int ATTACK_COOLDOWN = 16;
     private final int HEAVY_CHARGE_TICKS = 10;
     private final String DATA_KEY = "yamato_animation";
+
     private boolean spaceWasPressed = false;
 
     private ClientEvents() {}
@@ -51,6 +58,7 @@ public class ClientEvents {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
+
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
@@ -65,6 +73,7 @@ public class ClientEvents {
 
         AbstractClientPlayer player = mc.player;
         ItemStack stack = player.getMainHandItem();
+
         if (!(stack.getItem() instanceof YamatoItem)) {
             clearState(player.getUUID());
             return;
@@ -95,6 +104,7 @@ public class ClientEvents {
                 }
                 ModMessages.sendToServer(new WeaponAttackC2SPacket(targetId, heavy));
                 lastAttackTick.put(uuid, player.tickCount);
+
                 if (heavy) {
                     String heavyAnim = sheathed ? "heavy_blow_sheath" : "heavy_blow";
                     playOneShot(player, heavyAnim, true);
@@ -119,7 +129,6 @@ public class ClientEvents {
         } else {
             attackHeldTicks.put(uuid, 0);
         }
-
         wasAttackDown.put(uuid, attackDown);
 
         if (ModKeyBindings.TOGGLE_SHEATH.isDown() && player.isShiftKeyDown()) {
@@ -140,6 +149,7 @@ public class ClientEvents {
         double dz = player.getDeltaMovement().z;
         boolean isMoving = dx * dx + dz * dz > 0.001;
         boolean isSprinting = player.isSprinting();
+
         String moveAnim;
         if (isSprinting) {
             moveAnim = "sprinting";
@@ -156,9 +166,22 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
+    public void onKeyInput(InputEvent.Key event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+
+        if (event.getKey() == GLFW.GLFW_KEY_R && event.getAction() == GLFW.GLFW_PRESS) {
+            if (mc.player.getMainHandItem().getItem() instanceof GlockItem) {
+                ModMessages.sendToServer(new ReloadGunC2SPacket());
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onMovementInput(MovementInputUpdateEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
+
         if (mc.player.getPersistentData().getBoolean("inBeartrap") || mc.player.getPersistentData().getBoolean("inTrap")) {
             var input = event.getInput();
             input.leftImpulse = 0.0F;
@@ -176,6 +199,7 @@ public class ClientEvents {
     public void onInteractionKey(InputEvent.InteractionKeyMappingTriggered event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
+
         if (mc.player.getMainHandItem().getItem() instanceof YamatoItem) {
             if (event.isAttack()) {
                 event.setSwingHand(false);

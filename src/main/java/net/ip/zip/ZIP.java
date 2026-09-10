@@ -72,7 +72,7 @@ public class ZIP {
             event.registerEntityRenderer(ModEntities.MOLOTOV.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context));
             event.registerEntityRenderer(ModEntities.SMOKE_GRENADE.get(), net.ip.zip.client.renderer.ThrownItemRenderer::new);
             event.registerEntityRenderer(ModEntities.STUN_GRENADE.get(), net.ip.zip.client.renderer.ThrownItemRenderer::new);
-            event.registerEntityRenderer(ModEntities.BULLET.get(), net.ip.zip.client.renderer.BulletRenderer::new);
+            event.registerEntityRenderer(ModEntities.BULLET.get(), net.ip.zip.client.renderer.BulletEntityRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.STOP_SIGN.get(), context -> new net.ip.zip.client.renderer.StopSignBlockRenderer());
             event.registerBlockEntityRenderer(ModBlockEntities.TRAP.get(), context -> new net.ip.zip.client.renderer.TrapBlockRenderer(context));
         }

@@ -77,6 +77,9 @@ public class ModItem {
     public static final RegistryObject<Item> Binoculars = ITEMS.register("binoculars",
             () -> new BinocularsItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> Battery = ITEMS.register("battery",
+            () -> new BatteryItem(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

@@ -2,6 +2,7 @@ package net.ip.zip.client;
 
 import net.ip.zip.ZIP;
 import net.ip.zip.client.animation.AnimationHandler;
+import net.ip.zip.item.WeaponItem;
 import net.ip.zip.item.weapons.BaseballBatItem;
 import net.ip.zip.item.weapons.KitchenKnifeItem;
 import net.ip.zip.item.weapons.MacheteItem;
@@ -10,6 +11,8 @@ import net.ip.zip.network.ModMessages;
 import net.ip.zip.network.packet.WeaponAttackC2SPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
@@ -18,11 +21,27 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.*;
 
 @Mod.EventBusSubscriber(modid = ZIP.MOD_ID, value = Dist.CLIENT)
 public class WeaponClientEvents {
+
+    static {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(WeaponClientEvents::onClientSetup);
+    }
+
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemProperties.register(
+                    WeaponItem.Flashlight.get(),
+                    new ResourceLocation(ZIP.MOD_ID, "is_on"),
+                    (stack, world, entity, id) -> stack.getOrCreateTag().getBoolean("isOn") ? 1.0F : 0.0F
+            );
+        });
+    }
 
     private static final class Config {
         final String dataKey;
@@ -87,7 +106,6 @@ public class WeaponClientEvents {
         AbstractClientPlayer player = mc.player;
         ItemStack stack = player.getMainHandItem();
         UUID uuid = player.getUUID();
-
         Config config = getConfig(stack);
         State state = STATES.get(uuid);
 
@@ -130,7 +148,6 @@ public class WeaponClientEvents {
                 }
                 ModMessages.sendToServer(new WeaponAttackC2SPacket(targetId, heavy));
                 state.lastAttackTick = player.tickCount;
-
                 if (heavy) {
                     playOneShot(player, state, config.heavy, true);
                 } else {
@@ -153,7 +170,7 @@ public class WeaponClientEvents {
 
         if (config.hasBlock && useDown) {
             if (!config.block.equals(curAnim)) {
-                AnimationHandler.play(player, config.dataKey, config.block, false);
+                AnimationHandler.play(player, state.config.dataKey, config.block, false);
                 state.currentAnim = config.block;
             }
             return;
@@ -163,7 +180,6 @@ public class WeaponClientEvents {
         double dz = player.getDeltaMovement().z;
         boolean isMoving = dx * dx + dz * dz > 0.001;
         boolean isSprinting = player.isSprinting();
-
         String moveAnim;
         if (isSprinting) {
             moveAnim = config.movePrefix + "sprinting";
@@ -174,7 +190,7 @@ public class WeaponClientEvents {
         }
 
         if (!moveAnim.equals(curAnim)) {
-            AnimationHandler.play(player, config.dataKey, moveAnim, false);
+            AnimationHandler.play(player, state.config.dataKey, moveAnim, false);
             state.currentAnim = moveAnim;
         }
     }

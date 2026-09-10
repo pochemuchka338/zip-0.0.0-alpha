@@ -17,12 +17,17 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BulletEntity extends Projectile {
+public class BulletEntity extends Projectile implements GeoAnimatable {
     private static final EntityDataAccessor<Float> DATA_DAMAGE = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_KNOCKBACK = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> DATA_TRAIL = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.BOOLEAN);
 
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private int maxLife = 100;
     private int pierce = 0;
 
@@ -136,5 +141,19 @@ public class BulletEntity extends Projectile {
         if (tag.contains("Knockback")) setKnockback(tag.getFloat("Knockback"));
         if (tag.contains("Pierce")) pierce = tag.getInt("Pierce");
         if (tag.contains("Trail")) setTrail(tag.getBoolean("Trail"));
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
+    public double getTick(Object object) {
+        return this.tickCount;
     }
 }

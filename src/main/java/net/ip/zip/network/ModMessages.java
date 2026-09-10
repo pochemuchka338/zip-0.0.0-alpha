@@ -105,6 +105,12 @@ public class ModMessages {
                 .encoder(TrapSpaceC2SPacket::toBytes)
                 .consumerMainThread(TrapSpaceC2SPacket::handle)
                 .add();
+
+        net.messageBuilder(ReloadGunC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ReloadGunC2SPacket::encode)
+                .decoder(ReloadGunC2SPacket::decode)
+                .consumerMainThread(ReloadGunC2SPacket::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {

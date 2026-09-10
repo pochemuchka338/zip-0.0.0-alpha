@@ -55,6 +55,9 @@ public class WeaponItem {
     public static final RegistryObject<Item> Flashlight = ITEMS.register("flashlight",
             () -> new FlashlightItem(new Item.Properties().durability(300)));
 
+    public static final RegistryObject<Item> Bullet = ITEMS.register("bullet",
+            () -> new BulletItem(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
