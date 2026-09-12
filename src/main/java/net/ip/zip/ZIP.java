@@ -32,6 +32,7 @@ public class ZIP {
 
     public ZIP(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
+
         ModEffects.register(modEventBus);
         CreativeTabs.register(modEventBus);
         WeaponItem.register(modEventBus);
@@ -40,13 +41,14 @@ public class ZIP {
         ModEntities.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModParticles.register(modEventBus);
+        ModMessages.register();
+
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ModCommands.class);
         MinecraftForge.EVENT_BUS.register(ClientEvents.INSTANCE);
         modEventBus.register(ClientEvents.ModBusEvents.class);
         modEventBus.addListener(this::addCreative);
-        ModMessages.register();
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
@@ -55,15 +57,18 @@ public class ZIP {
         }
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {}
+    private void commonSetup(final FMLCommonSetupEvent event) {
+    }
 
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {}
+    public void onServerStarting(ServerStartingEvent event) {
+    }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {}
+        public static void onClientSetup(FMLClientSetupEvent event) {
+        }
 
         @SubscribeEvent
         public static void registerRenderers(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event) {

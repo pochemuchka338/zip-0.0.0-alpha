@@ -25,7 +25,6 @@ public class ModMessages {
                 .clientAcceptedVersions(s -> true)
                 .serverAcceptedVersions(s -> true)
                 .simpleChannel();
-
         INSTANCE = net;
 
         net.messageBuilder(ToggleSheathC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
@@ -33,99 +32,95 @@ public class ModMessages {
                 .encoder(ToggleSheathC2SPacket::toBytes)
                 .consumerMainThread(ToggleSheathC2SPacket::handle)
                 .add();
-
         net.messageBuilder(WeaponAttackC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(WeaponAttackC2SPacket::new)
                 .encoder(WeaponAttackC2SPacket::toBytes)
                 .consumerMainThread(WeaponAttackC2SPacket::handle)
                 .add();
-
         net.messageBuilder(PlayAnimS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(PlayAnimS2CPacket::new)
                 .encoder(PlayAnimS2CPacket::toBytes)
                 .consumerMainThread(PlayAnimS2CPacket::handle)
                 .add();
-
         net.messageBuilder(MeteorImpactS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(MeteorImpactS2CPacket::new)
                 .encoder(MeteorImpactS2CPacket::toBytes)
                 .consumerMainThread(MeteorImpactS2CPacket::handle)
                 .add();
-
         net.messageBuilder(FogStateS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(FogStateS2CPacket::new)
                 .encoder(FogStateS2CPacket::toBytes)
                 .consumerMainThread(FogStateS2CPacket::handle)
                 .add();
-
         net.messageBuilder(SuffocationTimerS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(SuffocationTimerS2CPacket::new)
                 .encoder(SuffocationTimerS2CPacket::toBytes)
                 .consumerMainThread(SuffocationTimerS2CPacket::handle)
                 .add();
-
         net.messageBuilder(GunShootC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(GunShootC2SPacket::new)
                 .encoder(GunShootC2SPacket::toBytes)
                 .consumerMainThread(GunShootC2SPacket::handle)
                 .add();
-
         net.messageBuilder(GunReloadC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(GunReloadC2SPacket::new)
                 .encoder(GunReloadC2SPacket::toBytes)
                 .consumerMainThread(GunReloadC2SPacket::handle)
                 .add();
-
         net.messageBuilder(GunModeC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(GunModeC2SPacket::new)
                 .encoder(GunModeC2SPacket::toBytes)
                 .consumerMainThread(GunModeC2SPacket::handle)
                 .add();
-
         net.messageBuilder(GunAimC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(GunAimC2SPacket::new)
                 .encoder(GunAimC2SPacket::toBytes)
                 .consumerMainThread(GunAimC2SPacket::handle)
                 .add();
-
         net.messageBuilder(GunRecoilS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(GunRecoilS2CPacket::new)
                 .encoder(GunRecoilS2CPacket::toBytes)
                 .consumerMainThread(GunRecoilS2CPacket::handle)
                 .add();
-
         net.messageBuilder(TrapSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(TrapSyncS2CPacket::new)
                 .encoder(TrapSyncS2CPacket::toBytes)
                 .consumerMainThread(TrapSyncS2CPacket::handle)
                 .add();
-
         net.messageBuilder(TrapSpaceC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(TrapSpaceC2SPacket::new)
                 .encoder(TrapSpaceC2SPacket::toBytes)
                 .consumerMainThread(TrapSpaceC2SPacket::handle)
                 .add();
-
         net.messageBuilder(ReloadGunC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ReloadGunC2SPacket::encode)
                 .decoder(ReloadGunC2SPacket::decode)
                 .consumerMainThread(ReloadGunC2SPacket::handle)
                 .add();
+        net.messageBuilder(StunExplodedMessage.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(StunExplodedMessage::encode)
+                .decoder(StunExplodedMessage::decode)
+                .consumerMainThread(StunExplodedMessage::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {
-        INSTANCE.sendToServer(message);
+        if (INSTANCE != null) INSTANCE.sendToServer(message);
     }
 
     public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+        if (INSTANCE != null) INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
     public static <MSG> void sendToPlayersNear(MSG message, ServerLevel level, double x, double y, double z, double radius) {
-        INSTANCE.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(x, y, z, radius, level.dimension())), message);
+        if (INSTANCE != null) INSTANCE.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(x, y, z, radius, level.dimension())), message);
     }
 
     public static <MSG> void sendToPlayersInDimension(MSG message, ServerLevel level) {
-        INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), message);
+        if (INSTANCE != null) INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), message);
+    }
+
+    public static <MSG> void sendToAll(MSG message) {
+        if (INSTANCE != null) INSTANCE.send(PacketDistributor.ALL.noArg(), message);
     }
 }

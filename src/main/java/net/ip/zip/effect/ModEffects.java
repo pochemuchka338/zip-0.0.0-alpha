@@ -12,9 +12,6 @@ public class ModEffects {
     public static final DeferredRegister<MobEffect> EFFECTS =
             DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, ZIP.MOD_ID);
 
-    public static final RegistryObject<MobEffect> STUNNED = EFFECTS.register("stunned",
-            () -> new StunnedEffect(MobEffectCategory.HARMFUL, 0xFFFFFF));
-
     public static void register(IEventBus eventBus) {
         EFFECTS.register(eventBus);
     }

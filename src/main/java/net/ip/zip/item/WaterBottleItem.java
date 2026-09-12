@@ -25,7 +25,7 @@ public class WaterBottleItem extends Item implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public WaterBottleItem(Properties properties) {
-        super(properties.food(new FoodProperties.Builder()
+        super(properties.stacksTo(1).food(new FoodProperties.Builder()
                 .nutrition(1)
                 .saturationMod(0.1f)
                 .alwaysEat()
