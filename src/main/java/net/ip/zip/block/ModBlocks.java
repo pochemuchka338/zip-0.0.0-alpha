@@ -39,9 +39,6 @@ public class ModBlocks {
             () -> new TrapBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)
                     .strength(2f).requiresCorrectToolForDrops().noOcclusion()));
 
-    public static final RegistryObject<Block> FlashlightLight = BLOCKS.register("flashlight_light",
-            FlashlightLightBlock::new);
-
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
